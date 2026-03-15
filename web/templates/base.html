@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fi" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthHub – {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">HealthHub</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' }}">Koti</a>
+            <a href="{{ url_for('meals') }}" class="{{ 'active' if request.endpoint in ('meals',) }}">Ateriat</a>
+            <a href="{{ url_for('migraines') }}" class="{{ 'active' if request.endpoint in ('migraines',) }}">Migreeni</a>
+            <a href="{{ url_for('trends') }}" class="{{ 'active' if request.endpoint == 'trends' }}">Trendit</a>
+            <a href="{{ url_for('settings') }}" class="{{ 'active' if request.endpoint in ('settings',) }}">Asetukset</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

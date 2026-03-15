@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Ateriat{% endblock %}
+{% block content %}
+
+<div class="flex-between mb-16">
+    <h2>Ateriat</h2>
+    <button class="btn btn-primary" onclick="document.getElementById('mealModal').classList.add('active')">+ Uusi ateria</button>
+</div>
+
+{% if meals %}
+{% for meal in meals %}
+<div class="card">
+    <div class="flex-between">
+        <div>
+            <strong>{{ meal.meal_description or 'Ateria' }}</strong>
+        </div>
+        <div class="flex gap-8" style="align-items:center">
+            <span class="text-dim text-sm">{{ meal.meal_time[:16] }}</span>
+            <form action="{{ url_for('remove_meal', meal_id=meal.id) }}" method="POST" style="margin:0">
+                <button type="submit" class="btn btn-sm btn-ghost" title="Poista">✕</button>
+            </form>
+        </div>
+    </div>
+    {% if meal.ingredients %}
+    <div style="margin-top:8px">
+        <span class="text-dim text-sm">{{ meal.ingredients | join(', ') }}</span>
+    </div>
+    {% endif %}
+    {% if meal.potential_triggers %}
+    <div style="margin-top:6px; color: var(--orange); font-size:0.85rem">
+        ⚠ {{ meal.potential_triggers | join(', ') }}
+    </div>
+    {% endif %}
+    {% if meal.notes %}
+    <div class="text-dim text-sm" style="margin-top:4px">{{ meal.notes }}</div>
+    {% endif %}
+</div>
+{% endfor %}
+{% else %}
+<div class="card" style="text-align:center">
+    <p class="text-dim">Ei ateriakirjauksia vielä</p>
+</div>
+{% endif %}
+
+<!-- New Meal Modal -->
+<div class="modal-overlay" id="mealModal">
+    <div class="modal">
+        <div class="modal-title">Uusi ateria</div>
+        <form action="{{ url_for('add_meal') }}" method="POST">
+            <div class="form-group">
+                <label>Kuvaus</label>
+                <input type="text" name="description" placeholder="Esim. Lounas">
+            </div>
+            <div class="form-group">
+                <label>Aika</label>
+                <input type="datetime-local" name="meal_time">
+            </div>
+            <div class="form-group">
+                <label>Ainesosat (pilkulla eroteltuina)</label>
+                <textarea name="ingredients" placeholder="Esim. kana, riisi, paprika"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Mahdolliset triggerit (pilkulla eroteltuina)</label>
+                <textarea name="triggers" placeholder="Esim. kypsytetty juusto, punaviini"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Muistiinpanot</label>
+                <textarea name="notes" placeholder="Valinnainen..."></textarea>
+            </div>
+            <div class="flex gap-8">
+                <button type="submit" class="btn btn-primary">Tallenna</button>
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('mealModal').classList.remove('active')">Peruuta</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

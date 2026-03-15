@@ -30,3 +30,5 @@ Pods/
 .env
 .env.local
 Secrets.plist
+web/healthhub.db
+__pycache__/

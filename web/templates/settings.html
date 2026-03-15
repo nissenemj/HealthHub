@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Asetukset{% endblock %}
+{% block content %}
+
+<h2 class="mb-16">Asetukset</h2>
+
+<!-- Integrations -->
+<div class="card">
+    <div class="card-title">Integraatiot</div>
+
+    <div class="setting-row">
+        <div>
+            <div>Oura Ring</div>
+            <div class="text-dim text-sm">
+                {% if oura_connected %}Yhdistetty{% else %}Ei yhdistetty{% endif %}
+            </div>
+        </div>
+        <div class="flex gap-8">
+            <form action="{{ url_for('test_oura') }}" method="POST">
+                <button type="submit" class="btn btn-sm btn-ghost">Testaa</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sync -->
+<div class="card">
+    <div class="card-title">Synkronointi</div>
+    <div class="setting-row">
+        <div>Synkronoi Oura-data</div>
+        <form action="{{ url_for('sync_oura') }}" method="POST">
+            <button type="submit" class="btn btn-sm btn-primary">Synkronoi nyt</button>
+        </form>
+    </div>
+</div>
+
+<!-- Baselines -->
+{% if baselines %}
+<div class="card">
+    <div class="card-title">Perusviivat (14 pv mediaani)</div>
+    {% for mt, bl in baselines.items() %}
+    <div class="setting-row">
+        <div>{{ mt }}</div>
+        <div>
+            <span style="font-weight:600">{{ "%.1f" | format(bl.median_value) }}</span>
+            <span class="text-dim text-sm">({{ bl.sample_count }} näytettä)</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- About -->
+<div class="card">
+    <div class="card-title">Tietoa</div>
+    <div class="setting-row">
+        <div>Versio</div>
+        <div class="text-dim">1.0.0 (Web)</div>
+    </div>
+    <div class="setting-row">
+        <div>Tietosuoja</div>
+        <div class="text-dim text-sm">Kaikki data tallennetaan paikallisesti</div>
+    </div>
+</div>
+
+{% endblock %}

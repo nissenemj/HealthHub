@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Koti{% endblock %}
+{% block content %}
+
+<!-- Risk Score Card -->
+<div class="card risk-card">
+    <div class="card-title">Päivän riskitaso</div>
+    <div class="risk-score" style="color: {{ risk.risk_color }}">{{ risk.risk_score | int }}</div>
+    <div class="risk-label" style="color: {{ risk.risk_color }}">{{ risk.risk_label }}</div>
+</div>
+
+<!-- Recommendation -->
+{% if risk.recommendation %}
+<div class="recommendation">
+    <span class="recommendation-icon">💡</span>
+    <span>{{ risk.recommendation }}</span>
+</div>
+{% endif %}
+
+<!-- Metrics Grid -->
+{% if metrics %}
+<div class="card-title">Mittarit</div>
+<div class="metrics-grid">
+    {% for key, m in metrics.items() %}
+    <div class="metric-card">
+        <div class="metric-label">{{ m.label }}</div>
+        <div class="metric-value">{{ "%.1f" | format(m.value) if m.value < 1000 else "%.0f" | format(m.value) }}</div>
+        <div class="metric-unit">{{ m.unit }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card" style="text-align:center">
+    <p class="text-dim">Ei mittareita tänään. <a href="{{ url_for('settings') }}">Synkronoi Ourasta</a></p>
+</div>
+{% endif %}
+
+<!-- Contributing Factors -->
+{% if risk.factors %}
+<div class="card">
+    <div class="card-title">Riskitekijät</div>
+    {% for f in risk.factors %}
+    <div class="factor-row">
+        <div>
+            <div>{{ f.name }}</div>
+            <div class="factor-detail">{{ f.detail }}</div>
+        </div>
+        <div class="text-dim">{{ (f.contribution * 100) | int }}%</div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Migraine-free days -->
+{% if migraine_free_days > 0 %}
+<div class="migraine-free">
+    <span style="font-size:1.2rem">🛡️</span>
+    <span>{{ migraine_free_days }} päivää ilman migreeniä</span>
+</div>
+{% endif %}
+
+<!-- Recent Migraines -->
+{% if migraines %}
+<div class="card">
+    <div class="card-title">Viimeaikaiset migreenit</div>
+    {% for m in migraines %}
+    <div class="list-item">
+        <span class="severity-dot" style="background: {{ m.severity_color }}"></span>
+        <div style="flex:1">
+            <div>{{ m.severity_label }}</div>
+            <div class="text-dim text-sm">{{ m.start_time[:10] }}</div>
+        </div>
+        {% if m.had_aura %}<span class="badge">Aura</span>{% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Context Tags -->
+<div class="card">
+    <div class="flex-between mb-16">
+        <div class="card-title" style="margin:0">Konteksti</div>
+        <button class="btn btn-sm btn-ghost" onclick="document.getElementById('tagModal').classList.add('active')">+ Lisää</button>
+    </div>
+    {% if tags %}
+    <div>
+        {% for t in tags %}
+        <span class="tag">{{ t.category }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-dim text-sm">Ei kontekstimerkintöjä tänään</p>
+    {% endif %}
+</div>
+
+<!-- Context Tag Modal -->
+<div class="modal-overlay" id="tagModal">
+    <div class="modal">
+        <div class="modal-title">Lisää konteksti</div>
+        <form action="{{ url_for('add_tag') }}" method="POST">
+            <div class="form-group">
+                <label>Kategoria</label>
+                <select name="category">
+                    {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Lisätietoja (valinnainen)</label>
+                <input type="text" name="note" placeholder="Lisätietoja...">
+            </div>
+            <div class="flex gap-8">
+                <button type="submit" class="btn btn-primary">Tallenna</button>
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('tagModal').classList.remove('active')">Peruuta</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

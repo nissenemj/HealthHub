@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Migreenit{% endblock %}
+{% block content %}
+
+<div class="flex-between mb-16">
+    <h2>Migreenit</h2>
+    <button class="btn btn-primary" onclick="document.getElementById('migraineModal').classList.add('active')">+ Kirjaa migreeni</button>
+</div>
+
+{% if migraines %}
+{% for m in migraines %}
+<div class="card">
+    <div class="flex-between">
+        <div class="flex gap-12" style="align-items:center">
+            <span class="severity-dot" style="background: {{ m.severity_color }}"></span>
+            <div>
+                <strong>{{ m.severity_label }}</strong>
+                {% if m.had_aura %}<span class="badge" style="margin-left:8px">Aura</span>{% endif %}
+            </div>
+        </div>
+        <div class="flex gap-8" style="align-items:center">
+            <span class="text-dim text-sm">{{ m.start_time[:16] }}</span>
+            <form action="{{ url_for('remove_migraine', event_id=m.id) }}" method="POST" style="margin:0">
+                <button type="submit" class="btn btn-sm btn-ghost" title="Poista">✕</button>
+            </form>
+        </div>
+    </div>
+    {% if m.end_time %}
+    <div class="text-dim text-sm" style="margin-top:6px">Päättyi: {{ m.end_time[:16] }}</div>
+    {% endif %}
+    {% if m.symptoms %}
+    <div style="margin-top:8px">
+        {% for s in m.symptoms %}
+        <span class="tag">{{ s }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if m.notes %}
+    <div class="text-dim text-sm" style="margin-top:6px">{{ m.notes }}</div>
+    {% endif %}
+</div>
+{% endfor %}
+{% else %}
+<div class="card" style="text-align:center">
+    <p class="text-dim">Ei migreenikirjauksia vielä</p>
+</div>
+{% endif %}
+
+<!-- New Migraine Modal -->
+<div class="modal-overlay" id="migraineModal">
+    <div class="modal">
+        <div class="modal-title">Kirjaa migreeni</div>
+        <form action="{{ url_for('add_migraine') }}" method="POST">
+            <div class="form-group">
+                <label>Alkamisaika</label>
+                <input type="datetime-local" name="start_time">
+            </div>
+            <div class="form-group">
+                <label>Voimakkuus</label>
+                <select name="severity">
+                    {% for s in severities %}
+                    <option value="{{ s.value }}" {{ 'selected' if s.value == 2 }}>{{ s.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label style="display:flex;align-items:center;gap:8px">
+                    <input type="checkbox" name="had_aura" style="width:auto">
+                    Aura
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Oireet</label>
+                <div class="checkbox-group">
+                    {% for s in symptoms %}
+                    <label><input type="checkbox" name="symptoms" value="{{ s }}"> {{ s }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Lääkitys (pilkulla eroteltuina)</label>
+                <input type="text" name="medications" placeholder="Esim. ibuprofeeni, triptaani">
+            </div>
+            <div class="form-group">
+                <label>Päättymisaika (valinnainen)</label>
+                <input type="datetime-local" name="end_time">
+            </div>
+            <div class="form-group">
+                <label>Muistiinpanot</label>
+                <textarea name="notes" placeholder="Valinnainen..."></textarea>
+            </div>
+            <div class="flex gap-8">
+                <button type="submit" class="btn btn-primary">Tallenna</button>
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('migraineModal').classList.remove('active')">Peruuta</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

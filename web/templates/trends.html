@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Trendit{% endblock %}
+{% block content %}
+
+<h2 class="mb-16">Trendit</h2>
+
+<!-- Period selector -->
+<div class="period-selector">
+    <a href="{{ url_for('trends', period='week') }}" class="{{ 'active' if period == 'week' }}">Viikko</a>
+    <a href="{{ url_for('trends', period='month') }}" class="{{ 'active' if period == 'month' }}">Kuukausi</a>
+    <a href="{{ url_for('trends', period='quarter') }}" class="{{ 'active' if period == 'quarter' }}">3 kk</a>
+</div>
+
+<!-- Summary cards -->
+<div class="trend-grid">
+    <div class="card">
+        <div class="card-title">Migreenitiheys</div>
+        <div style="font-size:2rem; font-weight:700">{{ migraine_count }}</div>
+        <div class="text-dim text-sm">kohtausta</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Keskimääräinen riski</div>
+        <div style="font-size:2rem; font-weight:700">{{ avg_risk }}</div>
+        <div class="text-dim text-sm">/ 100</div>
+    </div>
+</div>
+
+<!-- Top Triggers -->
+{% if top_triggers %}
+<div class="card">
+    <div class="card-title">Yleisimmät herätteet</div>
+    {% for name, count in top_triggers %}
+    <div class="factor-row">
+        <div>{{ name }}</div>
+        <div class="text-dim">{{ count }}x</div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Risk History -->
+{% if risk_history %}
+<div class="card">
+    <div class="card-title">Riskihistoria</div>
+    {% for r in risk_history %}
+    <div class="list-item">
+        <div style="flex:1">{{ r.date }}</div>
+        <div style="font-weight:600; color: {{ {'low':'#22c55e','moderate':'#eab308','elevated':'#f97316','high':'#ef4444'}.get(r.risk_level, '#8b8fa3') }}">
+            {{ r.risk_score | round(1) }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card" style="text-align:center">
+    <p class="text-dim">Ei riskihistoriaa vielä. Synkronoi dataa ja käytä dashboardia päivittäin.</p>
+</div>
+{% endif %}
+
+{% endblock %}
