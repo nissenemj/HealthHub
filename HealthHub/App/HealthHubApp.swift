@@ -22,6 +22,9 @@ struct HealthHubApp: App {
     }
 
     private func setupOnLaunch() {
+        // Load secrets from plist → Keychain (development only)
+        SecretsLoader.loadIfNeeded()
+
         // Schedule background tasks
         BackgroundTaskManager.shared.scheduleAllTasks()
 
