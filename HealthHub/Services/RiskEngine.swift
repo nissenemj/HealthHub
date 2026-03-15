@@ -94,10 +94,35 @@ class RiskEngine {
         default: riskLevel = .high
         }
 
+        let recommendation = generateRecommendation(riskLevel: riskLevel, factors: factors)
+
         return DailyRiskAssessment(
             riskScore: min(100, totalScore),
             riskLevel: riskLevel,
-            factors: factors
+            factors: factors,
+            recommendation: recommendation
         )
+    }
+
+    /// Generate a single actionable recommendation based on the highest-contributing factor
+    private func generateRecommendation(riskLevel: RiskLevel, factors: [RiskFactor]) -> String? {
+        guard riskLevel != .low else { return nil }
+
+        guard let topFactor = factors.max(by: { $0.contribution < $1.contribution }) else {
+            return nil
+        }
+
+        switch topFactor.name {
+        case "HRV poikkeama":
+            return "HRV on laskenut – harkitse kevyempää päivää ja huolehdi nesteytyksestä."
+        case "Univaje":
+            return "Palautuminen jäi vajaaksi – priorisoi unta tänä iltana."
+        case "Leposyke koholla":
+            return "Leposyke on koholla – vältä raskasta kuormitusta ja pidä taukoja."
+        case "Konteksti":
+            return "Riskitekijöitä havaittu – huomioi palautuminen tänään."
+        default:
+            return "Riskitaso koholla – kuuntele kehoasi ja pidä huolta palautumisesta."
+        }
     }
 }

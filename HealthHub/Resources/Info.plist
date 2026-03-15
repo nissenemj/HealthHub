@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>com.healthhub.migraine</string>
+	<key>CFBundleName</key>
+	<string>HealthHub</string>
+	<key>CFBundleDisplayName</key>
+	<string>HealthHub</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
+
+	<!-- HealthKit -->
+	<key>NSHealthShareUsageDescription</key>
+	<string>HealthHub lukee terveystietojasi (sykevälivaihtelu, leposyke, uni, askeleet) migreeniriskisi arvioimiseksi. Tietosi pysyvät laitteellasi.</string>
+
+	<!-- Camera -->
+	<key>NSCameraUsageDescription</key>
+	<string>HealthHub käyttää kameraa aterioiden kuvaamiseen. Kuvat analysoidaan mahdollisten migreenitriggerien tunnistamiseksi.</string>
+
+	<!-- Photo Library -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>HealthHub tarvitsee pääsyn kuvakirjastoosi ateriakuvien valitsemiseksi analysoitavaksi.</string>
+
+	<!-- Background Fetch -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.healthhub.migraine.healthkit-sync</string>
+		<string>com.healthhub.migraine.oura-sync</string>
+		<string>com.healthhub.migraine.baseline-update</string>
+	</array>
+</dict>
+</plist>

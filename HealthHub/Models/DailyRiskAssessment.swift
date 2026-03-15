@@ -39,6 +39,7 @@ struct DailyRiskAssessment: Identifiable, Codable {
     var riskScore: Double // 0.0 - 100.0
     var riskLevel: RiskLevel
     var factors: [RiskFactor]
+    var recommendation: String?
     let createdAt: Date
 
     init(
@@ -47,6 +48,7 @@ struct DailyRiskAssessment: Identifiable, Codable {
         riskScore: Double = 0,
         riskLevel: RiskLevel = .low,
         factors: [RiskFactor] = [],
+        recommendation: String? = nil,
         createdAt: Date = Date()
     ) {
         self.id = id
@@ -54,6 +56,7 @@ struct DailyRiskAssessment: Identifiable, Codable {
         self.riskScore = riskScore
         self.riskLevel = riskLevel
         self.factors = factors
+        self.recommendation = recommendation
         self.createdAt = createdAt
     }
 }

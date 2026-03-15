@@ -17,6 +17,11 @@ struct DashboardView: View {
                     // Key metrics summary
                     MetricsSummarySection(metrics: viewModel.todayMetrics)
 
+                    // Recommendation
+                    if let recommendation = viewModel.todayRisk.recommendation {
+                        RecommendationCard(text: recommendation)
+                    }
+
                     // Contributing factors
                     if !viewModel.todayRisk.factors.isEmpty {
                         FactorsSection(factors: viewModel.todayRisk.factors)
@@ -73,6 +78,24 @@ struct RiskScoreCard: View {
         case .elevated: return .orange
         case .high: return .red
         }
+    }
+}
+
+struct RecommendationCard: View {
+    let text: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "lightbulb.fill")
+                .foregroundStyle(.yellow)
+                .font(.title3)
+            Text(text)
+                .font(.subheadline)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.yellow.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
