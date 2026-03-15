@@ -32,6 +32,11 @@ struct DashboardView: View {
                         RecentMigrainesSection(migraines: viewModel.recentMigraines)
                     }
 
+                    // Migraine-free days
+                    if viewModel.migraineFreeDays > 0 {
+                        MigraineFreeDaysCard(days: viewModel.migraineFreeDays)
+                    }
+
                     // Context tags for today
                     ContextTagsSection(tags: viewModel.todayTags)
                 }
@@ -95,6 +100,24 @@ struct RecommendationCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(.yellow.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+struct MigraineFreeDaysCard: View {
+    let days: Int
+
+    var body: some View {
+        HStack {
+            Image(systemName: "checkmark.shield.fill")
+                .foregroundStyle(.green)
+                .font(.title3)
+            Text("\(days) päivää ilman migreeniä")
+                .font(.subheadline)
+            Spacer()
+        }
+        .padding()
+        .background(.green.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

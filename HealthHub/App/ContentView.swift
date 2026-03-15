@@ -29,6 +29,12 @@ struct ContentView: View {
                     Label("Trendit", systemImage: "chart.line.uptrend.xyaxis")
                 }
                 .tag(3)
+
+            SettingsView()
+                .tabItem {
+                    Label("Asetukset", systemImage: "gearshape")
+                }
+                .tag(4)
         }
         .tint(.blue)
     }
